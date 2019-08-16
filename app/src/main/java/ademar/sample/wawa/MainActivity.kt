@@ -73,6 +73,8 @@ class LoginActivity : AppCompatActivity(), Runnable {
                 radio.highlightColor = this
                 radio.setTextColor(this)
             }
+            button1.background.setColorFilter(this, MULTIPLY)
+            button2.setTextColor(this)
         }
         with(theme.slot4) {
             if (SDK_INT >= JELLY_BEAN) toggle.trackDrawable.setColorFilter(this, MULTIPLY)
