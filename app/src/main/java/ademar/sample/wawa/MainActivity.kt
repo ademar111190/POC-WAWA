@@ -1,13 +1,16 @@
 package ademar.sample.wawa
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator.ofArgb
 import android.graphics.Color
 import android.graphics.PorterDuff.Mode.MULTIPLY
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
 import android.util.Log
 import android.view.View.*
 import android.view.ViewGroup
+import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
@@ -18,10 +21,17 @@ class LoginActivity : AppCompatActivity(), Runnable {
 
     private var theme = Theme()
         set(value) {
-            Log.d("WAWA", "Setting from $field to $value")
-            field = value
-            container.post {
-                applyTheme(field)
+            runOnUiThread {
+                AnimatorSet().also {
+                    it.playTogether(
+                        ofArgb(this, "slot1", field.slot1, value.slot1),
+                        ofArgb(this, "slot2", field.slot2, value.slot2),
+                        ofArgb(this, "slot3", field.slot3, value.slot3),
+                        ofArgb(this, "slot4", field.slot4, value.slot4)
+                    )
+                    it.duration = resources.getInteger(android.R.integer.config_longAnimTime).toLong()
+                }.start()
+                field = value
             }
         }
 
@@ -29,14 +39,10 @@ class LoginActivity : AppCompatActivity(), Runnable {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        if (SDK_INT >= JELLY_BEAN) {
-            window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
-        if (SDK_INT >= LOLLIPOP) {
-            window.statusBarColor = Color.TRANSPARENT
-            appbar.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-                status.elevation = appbar.elevation
-            }
+        window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window.statusBarColor = Color.TRANSPARENT
+        appbar.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            status.elevation = appbar.elevation
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(status) { _, insets ->
@@ -55,37 +61,43 @@ class LoginActivity : AppCompatActivity(), Runnable {
         Thread(this).start()
     }
 
-    private fun applyTheme(theme: Theme) {
-        with(theme.slot1) {
-            appbar.setBackgroundColor(this)
-            status.setBackgroundColor(this)
-            toolbar.setBackgroundColor(this)
-        }
-        with(theme.slot2) {
-            container.setBackgroundColor(this)
-            toolbar.setTitleTextColor(this)
-            toolbar.setIconColor(this)
-        }
-        with(theme.slot3) {
-            load.indeterminateDrawable.setColorFilter(this, MULTIPLY)
-            if (SDK_INT >= JELLY_BEAN) toggle.thumbDrawable.setColorFilter(this, MULTIPLY)
-            for (radio in listOf(radio1, radio2)) {
-                radio.highlightColor = this
-                radio.setTextColor(this)
-            }
-            button1.background.setColorFilter(this, MULTIPLY)
-            button2.setTextColor(this)
-        }
-        with(theme.slot4) {
-            if (SDK_INT >= JELLY_BEAN) toggle.trackDrawable.setColorFilter(this, MULTIPLY)
-            if (SDK_INT >= LOLLIPOP) for (radio in listOf(radio1, radio2)) radio.buttonTintList = this.asColorStateList()
-        }
+    @Keep
+    fun setSlot1(color: Int) {
+        appbar.setBackgroundColor(color)
+        status.setBackgroundColor(color)
+        toolbar.setBackgroundColor(color)
+
         if (SDK_INT >= M) {
-            window.decorView.systemUiVisibility = if (ColorUtils.calculateLuminance(theme.slot1) > 0.5f)
+            window.decorView.systemUiVisibility = if (ColorUtils.calculateLuminance(color) > 0.5f)
                 window.decorView.systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             else
                 window.decorView.systemUiVisibility and SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
         }
+    }
+
+    @Keep
+    fun setSlot2(color: Int) {
+        container.setBackgroundColor(color)
+        toolbar.setTitleTextColor(color)
+        toolbar.setIconColor(color)
+    }
+
+    @Keep
+    fun setSlot3(color: Int) {
+        load.indeterminateDrawable.setColorFilter(color, MULTIPLY)
+        toggle.thumbDrawable.setColorFilter(color, MULTIPLY)
+        for (radio in listOf(radio1, radio2)) {
+            radio.highlightColor = color
+            radio.setTextColor(color)
+        }
+        button1.background.setColorFilter(color, MULTIPLY)
+        button2.setTextColor(color)
+    }
+
+    @Keep
+    fun setSlot4(color: Int) {
+        toggle.trackDrawable.setColorFilter(color, MULTIPLY)
+        for (radio in listOf(radio1, radio2)) radio.buttonTintList = color.asColorStateList()
     }
 
     override fun run() {
