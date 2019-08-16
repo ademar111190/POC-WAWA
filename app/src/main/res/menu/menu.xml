@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/audio_track"
+        android:icon="@drawable/ic_audio_track"
+        android:title="@string/lorem_ipsum"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/gesture"
+        android:icon="@drawable/ic_gesture"
+        android:title="@string/lorem_ipsum"
+        app:showAsAction="ifRoom"/>
+
+</menu>
