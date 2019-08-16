@@ -1,6 +1,6 @@
 {
-	"slot_1": "#ff0000",
-	"slot_2": "#ffff00",
+	"slot_4": "#ff0000",
 	"slot_3": "#00ff00",
-	"slot_4": "#0000ff"
+	"slot_2": "#0000ff",
+	"slot_1": "#ffff00"
 }

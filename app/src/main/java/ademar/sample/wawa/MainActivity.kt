@@ -24,10 +24,10 @@ class LoginActivity : AppCompatActivity(), Runnable {
             runOnUiThread {
                 AnimatorSet().also {
                     it.playTogether(
-                        ofArgb(this, "slot1", field.slot1, value.slot1),
-                        ofArgb(this, "slot2", field.slot2, value.slot2),
-                        ofArgb(this, "slot3", field.slot3, value.slot3),
-                        ofArgb(this, "slot4", field.slot4, value.slot4)
+                            ofArgb(this, "slot1", field.slot1, value.slot1),
+                            ofArgb(this, "slot2", field.slot2, value.slot2),
+                            ofArgb(this, "slot3", field.slot3, value.slot3),
+                            ofArgb(this, "slot4", field.slot4, value.slot4)
                     )
                     it.duration = resources.getInteger(android.R.integer.config_longAnimTime).toLong()
                 }.start()
@@ -66,6 +66,7 @@ class LoginActivity : AppCompatActivity(), Runnable {
         appbar.setBackgroundColor(color)
         status.setBackgroundColor(color)
         toolbar.setBackgroundColor(color)
+        for (edit_text in listOf(edit_text1, edit_text2)) edit_text.setTextColor(color)
 
         if (SDK_INT >= M) {
             window.decorView.systemUiVisibility = if (ColorUtils.calculateLuminance(color) > 0.5f)
@@ -98,6 +99,7 @@ class LoginActivity : AppCompatActivity(), Runnable {
     fun setSlot4(color: Int) {
         toggle.trackDrawable.setColorFilter(color, MULTIPLY)
         for (radio in listOf(radio1, radio2)) radio.buttonTintList = color.asColorStateList()
+        for (input in listOf(input1, input2)) input.defaultHintTextColor = color.asColorStateList()
     }
 
     override fun run() {
